@@ -8,5 +8,5 @@ HashiCorp Vault demo stuff
 ## Demo1 - Vault and K8s integration
 [![asciicast](https://asciinema.org/a/154578.png)](https://asciinema.org/a/154578?autoplay=1&cols=240&rows=40)
 
-## Demo2 - Vault init container and PKI
+## Demo2 - Deploing app - Vault init container and PKI example
 [![asciicast](https://asciinema.org/a/154579.png)](https://asciinema.org/a/154579?autoplay=1&cols=240&rows=40)
