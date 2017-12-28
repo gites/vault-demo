@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    application: demo1
+    version: v1
+  name: demo1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: demo1
+  template:
+    metadata:
+      labels:
+        application: demo1
+        version: v1
+    spec:
+      hostAliases:
+      - ip: "1.1.1.11"
+        hostnames:
+        - "k8s"
+      - ip: "1.1.1.11"
+        hostnames:
+        - "vault"
+      volumes:
+      - name: vagrant
+        hostPath:
+          path: /vagrant
+          type: Directory
+      containers:
+      - name: demo1
+        image: gites/ubuntu1604-vault:latest
+        volumeMounts:
+        - mountPath: /vagrant
+          name: vagrant
+        command:
+          - "/bin/sleep"
+        args:
+          - "100d"
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 256Mi
+          requests:
+            cpu: 200m
+            memory: 128Mi
+        env:
+        - name: VAULT_ADDR
+          value: "https://vault:8200"
+        - name: VAULT_CACERT
+          value: "/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+      serviceAccount: demo1
+
