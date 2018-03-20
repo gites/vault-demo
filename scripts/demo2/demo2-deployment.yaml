@@ -28,33 +28,16 @@ spec:
         hostPath:
           path: /vagrant
           type: Directory
-      - name: secrets
-        emptyDir:
-          medium: Memory
-      - name: certs
-        emptyDir:
-          medium: Memory
-      initContainers:
-#      containers:
-      - name: demo2-init
-        image: gites/ubuntu1604-vault:latest
-        command:
-          - "/demo2_init.sh"
-        env:
-        - name: VAULT_ADDR
-          value: "https://vault:8200"
-        - name: VAULT_CACERT
-          value: "/run/secrets/kubernetes.io/serviceaccount/ca.crt"
-        volumeMounts:
-        - mountPath: /certs
-          name: certs
-        - mountPath: /secrets
-          name: secrets
       containers:
       - name: demo2
         image: gites/ubuntu1604-vault:latest
+        volumeMounts:
+        - mountPath: /vagrant
+          name: vagrant
         command:
-          - "/demo2_entrypoint.sh"
+          - "/bin/sleep"
+        args:
+          - "100d"
         resources:
           limits:
             cpu: 1000m
@@ -67,11 +50,5 @@ spec:
           value: "https://vault:8200"
         - name: VAULT_CACERT
           value: "/run/secrets/kubernetes.io/serviceaccount/ca.crt"
-        volumeMounts:
-        - mountPath: /vagrant
-          name: vagrant
-        - mountPath: /certs
-          name: certs
-        - mountPath: /secrets
-          name: secrets
       serviceAccount: demo2
+

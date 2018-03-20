@@ -6,10 +6,12 @@ cd /vagrant/scripts/demo2/
 . ../functions.sh
 
 CMD_ARRAY=(
-  "kubectl apply -f demo2-stuff.yaml"
-  "vimcat demo2-stuff.yaml"
-  "kubectl apply -f demo2-deployment.yaml"
+  "vimcat demo2-rbac.yaml"
+  "kubectl apply -f demo2-rbac.yaml"
+  "vimcat demo2-service-account.yaml"
+  "kubectl apply -f demo2-service-account.yaml"
   "vimcat demo2-deployment.yaml"
+  "kubectl apply -f demo2-deployment.yaml"
   "kubectl get po"
 )
 

@@ -9,6 +9,6 @@ roleRef:
   name: system:auth-delegator
 subjects:
 - kind: ServiceAccount
-  name: demo1
+  name: demo2
   namespace: default
 

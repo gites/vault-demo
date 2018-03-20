@@ -13,7 +13,7 @@ CA_CERT="--cacert ${VAULT_CACERT}"
 
 JWT=`cat /run/secrets/kubernetes.io/serviceaccount/token`
 
-VAULT_TOKEN=`curl -v ${CA_CERT} ${VAULT_ADDR}/v1/auth/kubernetes/login -d "{\"jwt\":\"$JWT\", \"role\":\"demo2\"}" | jq .auth.client_token | tr -d \"`
+VAULT_TOKEN=`curl -v ${CA_CERT} ${VAULT_ADDR}/v1/auth/kubernetes/login -d "{\"jwt\":\"$JWT\", \"role\":\"demo3\"}" | jq .auth.client_token | tr -d \"`
 
 #One place for curl options
 CURL_OPT="-v ${CA_CERT} -H X-Vault-Token:${VAULT_TOKEN}"

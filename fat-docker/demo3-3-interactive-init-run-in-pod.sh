@@ -10,7 +10,7 @@ JWT=`cat /run/secrets/kubernetes.io/serviceaccount/token`
 
 HTTP_BASE_CMD="http --verbose --json  --verify $VAULT_CACERT"
 
-$HTTP_BASE_CMD POST ${VAULT_ADDR}/v1/auth/kubernetes/login  jwt=$JWT role=demo2
+$HTTP_BASE_CMD POST ${VAULT_ADDR}/v1/auth/kubernetes/login  jwt=$JWT role=demo3
 echo -n "TOKEN (from .auth.client_token)> "
 read VAULT_TOKEN
 $HTTP_BASE_CMD POST ${VAULT_ADDR}/v1/pki/issue/goldfish-tls X-Vault-Token:$VAULT_TOKEN common_name=goldfish ip_sans=1.1.1.11

@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    application: demo3
+    version: v1
+  name: demo3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: demo3
+  template:
+    metadata:
+      labels:
+        application: demo3
+        version: v1
+    spec:
+      hostAliases:
+      - ip: "1.1.1.11"
+        hostnames:
+        - "k8s"
+      - ip: "1.1.1.11"
+        hostnames:
+        - "vault"
+      volumes:
+      - name: vagrant
+        hostPath:
+          path: /vagrant
+          type: Directory
+      - name: secrets
+        emptyDir:
+          medium: Memory
+      - name: certs
+        emptyDir:
+          medium: Memory
+      initContainers:
+      #containers:
+      - name: demo3-init
+        image: gites/ubuntu1604-vault:latest
+        command:
+          - "/demo3_init.sh"
+        env:
+        - name: VAULT_ADDR
+          value: "https://vault:8200"
+        - name: VAULT_CACERT
+          value: "/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        volumeMounts:
+        - mountPath: /certs
+          name: certs
+        - mountPath: /secrets
+          name: secrets
+      containers:
+      - name: demo3
+        image: gites/ubuntu1604-vault:latest
+        command:
+          - "/demo3_entrypoint.sh"
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 256Mi
+          requests:
+            cpu: 200m
+            memory: 128Mi
+        env:
+        - name: VAULT_ADDR
+          value: "https://vault:8200"
+        - name: VAULT_CACERT
+          value: "/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+        volumeMounts:
+        - mountPath: /vagrant
+          name: vagrant
+        - mountPath: /certs
+          name: certs
+        - mountPath: /secrets
+          name: secrets
+      serviceAccount: demo3

@@ -32,7 +32,7 @@ cp /opt/pki/K8s+Vault_Demo_Root_CA.key /etc/kubernetes/pki/ca.key
 certstrap --depot-path "/opt/pki/" request-cert --passphrase "" --common-name "vault" -ip "1.1.1.11,127.0.0.1" -domain "vault"
 certstrap --depot-path "/opt/pki/" sign "vault" --CA "K8s+Vault Demo Root CA"
 
-kubeadm init --apiserver-advertise-address=1.1.1.11 --apiserver-cert-extra-sans=k8s,1.1.1.11
+kubeadm init --kubernetes-version=v1.9.0 --apiserver-advertise-address=1.1.1.11 --apiserver-cert-extra-sans=k8s,1.1.1.11
 
 mkdir -p $HOME/.kube
 ln -sf /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -42,7 +42,7 @@ kubectl apply -f /vagrant/scripts/calico.yaml
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # Install Vault
-VAULT_VER="0.9.0"
+VAULT_VER="0.9.5"
 wget -q https://releases.hashicorp.com/vault/$VAULT_VER/vault_${VAULT_VER}_linux_amd64.zip -O /tmp/vault.zip
 unzip -o /tmp/vault.zip -d /usr/local/sbin
 
@@ -67,28 +67,28 @@ sleep 5
 /usr/local/sbin/vault init -key-shares=5 -key-threshold=3 >/root/vault-init.txt 2>/dev/null
 sleep 1
 # Unseal
-vault unseal `awk '/Unseal Key 1:/  { print $4 } ' /root/vault-init.txt`
-vault unseal `awk '/Unseal Key 2:/  { print $4 } ' /root/vault-init.txt`
-vault unseal `awk '/Unseal Key 3:/  { print $4 } ' /root/vault-init.txt`
+vault operator unseal `awk '/Unseal Key 1:/  { print $4 } ' /root/vault-init.txt`
+vault operator unseal `awk '/Unseal Key 2:/  { print $4 } ' /root/vault-init.txt`
+vault operator unseal `awk '/Unseal Key 3:/  { print $4 } ' /root/vault-init.txt`
 vault status
 vault --autocomplete-install
 
 awk '/Initial Root Token:/  { print $4 } ' /root/vault-init.txt > /root/.vault-token
 
 # Example secrets
-vault write secret/demo1/secret1  vaule="super secret for demo1"
-vault write secret/demo1/secret2  vaule=" woop woop  (V) (°,,,°) (V)"
-vault write secret/demo1/delete-me1  vaule="delete me"
+vault write secret/demo2/secret1  vaule="super secret for demo2"
+vault write secret/demo2/secret2  vaule=" woop woop  (V) (°,,,°) (V)"
+vault write secret/demo2/delete-me1  vaule="delete me"
 vault write secret/demoX/msg vaule="something something dark sie"
 vault write secret/demoX/cant_read_this vaule="http://fandom.wikia.com/careers/listing/697886"
-vault write secret/goldfish/msg/msg1 @/vagrant/scripts/demo2/goldfish-msg.json
+vault write secret/goldfish/msg/msg1 @/vagrant/scripts/demo3/goldfish-msg.json
 
 # Seal (for demo)
-vault seal
+vault operator seal
 
 # Pull docker images
 docker pull gites/ubuntu1604-vault:latest
-docker pull mysql
+#docker pull mysql
 
 # Other stuff
 wget -q https://raw.githubusercontent.com/vim-scripts/vimcat/master/vimcat -O /usr/local/bin/vimcat
