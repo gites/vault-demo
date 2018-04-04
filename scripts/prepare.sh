@@ -32,7 +32,7 @@ cp /opt/pki/K8s+Vault_Demo_Root_CA.key /etc/kubernetes/pki/ca.key
 certstrap --depot-path "/opt/pki/" request-cert --passphrase "" --common-name "vault" -ip "1.1.1.11,127.0.0.1" -domain "vault"
 certstrap --depot-path "/opt/pki/" sign "vault" --CA "K8s+Vault Demo Root CA"
 
-kubeadm init --kubernetes-version=v1.9.0 --apiserver-advertise-address=1.1.1.11 --apiserver-cert-extra-sans=k8s,1.1.1.11
+kubeadm init --apiserver-advertise-address=1.1.1.11 --apiserver-cert-extra-sans=k8s,1.1.1.11
 
 mkdir -p $HOME/.kube
 ln -sf /etc/kubernetes/admin.conf $HOME/.kube/config
